@@ -36,7 +36,7 @@ function RequirementsPage() {
   const [filter, setFilter] = useState<string>("all");
   const [matchTarget, setMatchTarget] = useState<Requirement | null>(null);
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
-  const { data: requirements = [], isLoading } = useRequirements();
+  const { data: requirements = [], isLoading, error } = useRequirements();
   const markDelivered = useMarkDelivered();
 
   const rows = requirements.filter((r) => filter === "all" || r.status === filter);
@@ -69,7 +69,11 @@ function RequirementsPage() {
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
         <ul className="divide-y divide-border">
-          {isLoading ? (
+          {error ? (
+            <li className="px-5 py-10 text-sm text-destructive">
+              Couldn't load requirements: {error.message}
+            </li>
+          ) : isLoading ? (
             <li className="px-5 py-10 text-sm text-muted-foreground">Loading…</li>
           ) : rows.length === 0 ? (
             <li className="px-5 py-10 text-sm text-muted-foreground">No requirements to show.</li>
