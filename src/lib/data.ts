@@ -54,6 +54,24 @@ async function currentUserId() {
   return data.user?.id ?? null;
 }
 
+/** The signed-in user's own profile row (own-row RLS). */
+export function useMyProfile() {
+  return useQuery({
+    queryKey: ["my-profile"],
+    queryFn: async () => {
+      const userId = await currentUserId();
+      if (!userId) return null;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, role")
+        .eq("id", userId)
+        .maybeSingle();
+      throwIf(error);
+      return data;
+    },
+  });
+}
+
 export function useTrucks() {
   return useQuery({
     queryKey: ["trucks"],
