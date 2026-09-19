@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedRequirementsRouteImport } from './routes/_authenticated/requirements'
 import { Route as AuthenticatedTrucksIndexRouteImport } from './routes/_authenticated/trucks.index'
+import { Route as AuthenticatedTrucksTruckIdRouteImport } from './routes/_authenticated/trucks.$truckId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,10 +36,22 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRequirementsRoute =
+  AuthenticatedRequirementsRouteImport.update({
+    id: '/requirements',
+    path: '/requirements',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTrucksIndexRoute =
   AuthenticatedTrucksIndexRouteImport.update({
     id: '/trucks/',
     path: '/trucks/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTrucksTruckIdRoute =
+  AuthenticatedTrucksTruckIdRouteImport.update({
+    id: '/trucks/$truckId',
+    path: '/trucks/$truckId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -45,12 +59,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/requirements': typeof AuthenticatedRequirementsRoute
+  '/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/trucks/': typeof AuthenticatedTrucksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/requirements': typeof AuthenticatedRequirementsRoute
+  '/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/trucks': typeof AuthenticatedTrucksIndexRoute
 }
 export interface FileRoutesById {
@@ -59,19 +77,35 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/requirements': typeof AuthenticatedRequirementsRoute
+  '/_authenticated/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/_authenticated/trucks/': typeof AuthenticatedTrucksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/trucks/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/requirements'
+    | '/trucks/$truckId'
+    | '/trucks/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/trucks'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/requirements'
+    | '/trucks/$truckId'
+    | '/trucks'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/requirements'
+    | '/_authenticated/trucks/$truckId'
     | '/_authenticated/trucks/'
   fileRoutesById: FileRoutesById
 }
@@ -111,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/requirements': {
+      id: '/_authenticated/requirements'
+      path: '/requirements'
+      fullPath: '/requirements'
+      preLoaderRoute: typeof AuthenticatedRequirementsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/trucks/': {
       id: '/_authenticated/trucks/'
       path: '/trucks'
@@ -118,16 +159,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrucksIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/trucks/$truckId': {
+      id: '/_authenticated/trucks/$truckId'
+      path: '/trucks/$truckId'
+      fullPath: '/trucks/$truckId'
+      preLoaderRoute: typeof AuthenticatedTrucksTruckIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedRequirementsRoute: typeof AuthenticatedRequirementsRoute
+  AuthenticatedTrucksTruckIdRoute: typeof AuthenticatedTrucksTruckIdRoute
   AuthenticatedTrucksIndexRoute: typeof AuthenticatedTrucksIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedRequirementsRoute: AuthenticatedRequirementsRoute,
+  AuthenticatedTrucksTruckIdRoute: AuthenticatedTrucksTruckIdRoute,
   AuthenticatedTrucksIndexRoute: AuthenticatedTrucksIndexRoute,
 }
 
