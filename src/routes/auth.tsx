@@ -20,6 +20,8 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Sign in to Maa Durga Transport to manage trucks, requirements and deliveries.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -122,8 +124,8 @@ function AuthPage() {
                    : "Operations access for the owner and employees."}
               </p>
               <form onSubmit={submit} className="mt-6 space-y-4">
-                 {mode === "signup" ? (
-                 {mode !== "forgot" ? <div className="space-y-2">
+                {mode === "signup" ? (
+                  <div className="space-y-2">
                     <Label htmlFor="fullName">Full name</Label>
                     <Input
                       id="fullName"
@@ -144,18 +146,20 @@ function AuthPage() {
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                 </div> : null}
+                {mode !== "forgot" ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                ) : null}
                 <Button type="submit" className="w-full" disabled={loading}>
                    {loading
                      ? "Please wait…"

@@ -32,6 +32,8 @@ export const Route = createFileRoute("/_authenticated/trucks/$truckId")({
         property: "og:description",
         content: "Permanent truck details plus the full visit history, ratings and feedback.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TruckProfile,

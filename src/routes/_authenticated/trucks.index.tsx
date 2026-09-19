@@ -26,6 +26,8 @@ export const Route = createFileRoute("/_authenticated/trucks/")({
         property: "og:description",
         content: "Every truck registered with the hub, its driver and its current visit status.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TrucksPage,

@@ -28,6 +28,8 @@ export const Route = createFileRoute("/_authenticated/requirements")({
         property: "og:description",
         content: "Client delivery requirements with destination, goods, price and matching status.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RequirementsPage,

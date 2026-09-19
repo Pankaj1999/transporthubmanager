@@ -19,6 +19,8 @@ export const Route = createFileRoute("/")({
         content:
           "Track trucks at the hub, log client requirements, match them in one action and rate every delivery.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,

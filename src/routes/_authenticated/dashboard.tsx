@@ -19,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
         property: "og:description",
         content: "Live view of trucks at the hub, pending requirements and shipments in transit.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Dashboard,
