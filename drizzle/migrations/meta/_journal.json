@@ -15,6 +15,13 @@
       "when": 1789825038714,
       "tag": "0001_driver_photos_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789826264094,
+      "tag": "0002_grant_data_api_access",
+      "breakpoints": true
     }
   ]
 }
