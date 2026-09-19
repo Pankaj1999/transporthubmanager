@@ -12,8 +12,9 @@ export type TeamMember = {
 };
 
 /** Throws unless the authenticated caller has the owner role. */
-async function assertOwner(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase
+async function assertOwner(context: { userId: string }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
     .from("profiles")
     .select("role")
     .eq("id", context.userId)
@@ -29,6 +30,7 @@ export const listTeam = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<TeamMember[]> => {
     await assertOwner(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
 
     const [{ data: profiles, error }, { data: usersData }] = await Promise.all([
       supabaseAdmin.from("profiles").select("*").order("created_at", { ascending: true }),
