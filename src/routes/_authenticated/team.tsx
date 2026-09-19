@@ -9,8 +9,10 @@ import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { inviteEmployee, listTeam } from "@/lib/team.functions";
+import { inviteEmployee, listTeam, promoteToOwner } from "@/lib/team.functions";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { useMyProfile } from "@/lib/data";
+
 
 
 export const Route = createFileRoute("/_authenticated/team")({
@@ -36,6 +38,8 @@ export const Route = createFileRoute("/_authenticated/team")({
 function TeamPage() {
   const fetchTeam = useServerFn(listTeam);
   const invite = useServerFn(inviteEmployee);
+  const promote = useServerFn(promoteToOwner);
+
   const qc = useQueryClient();
   const profile = useMyProfile();
   const isOwner = profile.data?.role === "owner";
@@ -70,6 +74,17 @@ function TeamPage() {
     onError: (error) =>
       toast.error(error instanceof Error ? error.message : "Could not send the invitation"),
   });
+
+  const promoteMutation = useMutation({
+    mutationFn: async (userId: string) => promote({ data: { user_id: userId } }),
+    onSuccess: () => {
+      toast.success("Owner access granted");
+      void qc.invalidateQueries({ queryKey: ["team"] });
+    },
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Could not update the role"),
+  });
+
 
   return (
     <AppShell
