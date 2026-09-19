@@ -172,20 +172,19 @@ function AuthPage() {
               </form>
                <div className="mt-4 flex flex-col items-center gap-2">
                  {mode === "signin" ? (
-                   <Button type="button" variant="link" size="sm" onClick={() => setMode("forgot")}>
-                     Forgot password?
+                   <>
+                     <Button type="button" variant="link" size="sm" onClick={() => setMode("forgot")}>
+                       Forgot password?
+                     </Button>
+                     <p className="text-center text-xs text-muted-foreground">
+                       Accounts are created by the owner. Ask them for an invitation.
+                     </p>
+                   </>
+                 ) : (
+                   <Button type="button" variant="link" size="sm" onClick={() => setMode("signin")}>
+                     Back to sign in
                    </Button>
-                 ) : null}
-                 <Button
-                   type="button"
-                   variant="link"
-                   size="sm"
-                   onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-                 >
-                   {mode === "signin"
-                     ? "No account yet? Create one"
-                     : "Back to sign in"}
-                 </Button>
+                 )}
                </div>
             </>
           )}
