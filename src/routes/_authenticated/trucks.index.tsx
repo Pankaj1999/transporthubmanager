@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { StatusBadge } from "@/components/StatusBadge";
 import { DriverAvatar } from "@/components/DriverAvatar";
 import { AddTruckModal } from "@/components/AddTruckModal";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatDate, TRUCK_STATUSES, STATUS_LABEL } from "@/lib/status";
-import { useTrucks, useVisits } from "@/lib/data";
+import { useDeleteTruck, useTrucks, useVisits } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/trucks/")({
   head: () => ({
@@ -33,6 +35,7 @@ function TrucksPage() {
   const [filter, setFilter] = useState<string>("all");
   const { data: trucks = [], isLoading } = useTrucks();
   const { data: visits = [] } = useVisits();
+  const deleteTruck = useDeleteTruck();
 
   const latestVisit = new Map<string, (typeof visits)[number]>();
   for (const visit of visits) {
@@ -77,11 +80,11 @@ function TrucksPage() {
             <li className="px-5 py-10 text-sm text-muted-foreground">No trucks to show.</li>
           ) : (
             rows.map(({ truck, visit }) => (
-              <li key={truck.id}>
+              <li key={truck.id} className="flex items-center gap-2 pr-3 transition-colors hover:bg-secondary">
                 <Link
                   to="/trucks/$truckId"
                   params={{ truckId: truck.id }}
-                  className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary"
+                  className="flex min-w-0 flex-1 items-center gap-4 px-5 py-4"
                 >
                   <DriverAvatar path={truck.driver_photo_url} name={truck.driver_name} />
                   <div className="min-w-0 flex-1">
@@ -95,6 +98,17 @@ function TrucksPage() {
                   </div>
                   {visit ? <StatusBadge status={visit.status} /> : null}
                 </Link>
+                <ConfirmDelete
+                  title={`Delete ${truck.truck_number}?`}
+                  description="This removes the truck along with its visit history and ratings. Any requirement still attached to it goes back to pending. This can't be undone."
+                  pending={deleteTruck.isPending}
+                  onConfirm={() =>
+                    deleteTruck.mutate(truck.id, {
+                      onSuccess: () => toast.success(`${truck.truck_number} deleted`),
+                      onError: (error) => toast.error(error.message),
+                    })
+                  }
+                />
               </li>
             ))
           )}

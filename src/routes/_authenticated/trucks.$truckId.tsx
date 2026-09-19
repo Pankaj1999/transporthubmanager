@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Phone, Star, Plus } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Phone, Star, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { StatusBadge } from "@/components/StatusBadge";
 import { DriverAvatar } from "@/components/DriverAvatar";
 import { RateVisitModal, type RateTarget } from "@/components/RateVisitModal";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatMoney } from "@/lib/status";
-import { useAddVisit, useTruck, useTruckVisits, type Rating } from "@/lib/data";
+import { useAddVisit, useDeleteTruck, useTruck, useTruckVisits, type Rating } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/trucks/$truckId")({
   head: () => ({
@@ -50,9 +51,11 @@ function Stars({ value }: { value: number }) {
 
 function TruckProfile() {
   const { truckId } = Route.useParams();
+  const navigate = useNavigate();
   const { data: truck } = useTruck(truckId);
   const { data: visits = [], isLoading } = useTruckVisits(truckId);
   const addVisit = useAddVisit();
+  const deleteTruck = useDeleteTruck();
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
 
   const rated = visits.map((v) => firstRating(v.rating)).filter((r): r is Rating => !!r);
@@ -65,20 +68,42 @@ function TruckProfile() {
     <AppShell
       title={truck?.truck_number ?? "Truck"}
       action={
-        !hasOpenVisit ? (
-          <Button
-            onClick={() =>
-              addVisit.mutate(truckId, {
-                onSuccess: () => toast.success("New visit opened — truck is available"),
+        <div className="flex items-center gap-2">
+          {!hasOpenVisit ? (
+            <Button
+              onClick={() =>
+                addVisit.mutate(truckId, {
+                  onSuccess: () => toast.success("New visit opened — truck is available"),
+                  onError: (error) => toast.error(error.message),
+                })
+              }
+              disabled={addVisit.isPending}
+            >
+              <Plus className="size-4" />
+              Log new arrival
+            </Button>
+          ) : null}
+          <ConfirmDelete
+            title={`Delete ${truck?.truck_number ?? "this truck"}?`}
+            description="This removes the truck along with its visit history and ratings. Any requirement still attached to it goes back to pending. This can't be undone."
+            pending={deleteTruck.isPending}
+            onConfirm={() =>
+              deleteTruck.mutate(truckId, {
+                onSuccess: () => {
+                  toast.success("Truck deleted");
+                  void navigate({ to: "/trucks" });
+                },
                 onError: (error) => toast.error(error.message),
               })
             }
-            disabled={addVisit.isPending}
-          >
-            <Plus className="size-4" />
-            Log new arrival
-          </Button>
-        ) : undefined
+            trigger={
+              <Button variant="outline">
+                <Trash2 className="size-4" />
+                Delete truck
+              </Button>
+            }
+          />
+        </div>
       }
     >
       <Link
