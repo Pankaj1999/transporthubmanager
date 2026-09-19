@@ -83,3 +83,33 @@ export const inviteEmployee = createServerFn({ method: "POST" })
     }
     return { ok: true as const, email: data.email };
   });
+
+export const promoteToOwner = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) =>
+    z.object({ user_id: z.string().uuid() }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    await assertOwner(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: target, error: findError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, role, full_name, email")
+      .eq("id", data.user_id)
+      .maybeSingle();
+    if (findError) throw new Error(findError.message);
+    if (!target) throw new Error("That team member no longer exists.");
+    if (target.role === "owner") {
+      return { ok: true as const, id: target.id };
+    }
+
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ role: "owner" })
+      .eq("id", data.user_id);
+    if (error) throw new Error(error.message);
+
+    return { ok: true as const, id: target.id };
+  });
+
