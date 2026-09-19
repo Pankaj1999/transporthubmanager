@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedRequirementsRouteImport } from './routes/_authenticated/requirements'
+import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedTrucksIndexRouteImport } from './routes/_authenticated/trucks.index'
 import { Route as AuthenticatedTrucksTruckIdRouteImport } from './routes/_authenticated/trucks.$truckId'
 
@@ -48,6 +49,11 @@ const AuthenticatedRequirementsRoute =
     path: '/requirements',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTrucksIndexRoute =
   AuthenticatedTrucksIndexRouteImport.update({
     id: '/trucks/',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/trucks/': typeof AuthenticatedTrucksIndexRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/requirements': typeof AuthenticatedRequirementsRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/trucks': typeof AuthenticatedTrucksIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/requirements': typeof AuthenticatedRequirementsRoute
+  '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/_authenticated/trucks/$truckId': typeof AuthenticatedTrucksTruckIdRoute
   '/_authenticated/trucks/': typeof AuthenticatedTrucksIndexRoute
 }
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/requirements'
+    | '/team'
     | '/trucks/$truckId'
     | '/trucks/'
   fileRoutesByTo: FileRoutesByTo
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/dashboard'
     | '/requirements'
+    | '/team'
     | '/trucks/$truckId'
     | '/trucks'
   id:
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/dashboard'
     | '/_authenticated/requirements'
+    | '/_authenticated/team'
     | '/_authenticated/trucks/$truckId'
     | '/_authenticated/trucks/'
   fileRoutesById: FileRoutesById
@@ -172,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRequirementsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/trucks/': {
       id: '/_authenticated/trucks/'
       path: '/trucks'
@@ -192,6 +211,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRequirementsRoute: typeof AuthenticatedRequirementsRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedTrucksTruckIdRoute: typeof AuthenticatedTrucksTruckIdRoute
   AuthenticatedTrucksIndexRoute: typeof AuthenticatedTrucksIndexRoute
 }
@@ -199,6 +219,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRequirementsRoute: AuthenticatedRequirementsRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedTrucksTruckIdRoute: AuthenticatedTrucksTruckIdRoute,
   AuthenticatedTrucksIndexRoute: AuthenticatedTrucksIndexRoute,
 }
