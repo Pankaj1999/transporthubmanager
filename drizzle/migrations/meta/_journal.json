@@ -36,6 +36,13 @@
       "when": 1789828593390,
       "tag": "0004_security_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789843206926,
+      "tag": "0005_delete_individual_truck_visit",
+      "breakpoints": true
     }
   ]
 }

@@ -17,17 +17,19 @@ import { useDeleteRequirement, useMarkDelivered, useRequirements, type Requireme
 export const Route = createFileRoute("/_authenticated/requirements")({
   head: () => ({
     meta: [
-      { title: "Requirements · TransportHub" },
+      { title: "Requirements · Maa Durga Transport" },
       {
         name: "description",
         content:
           "Client delivery requirements with destination, goods, price and matching status.",
       },
-      { property: "og:title", content: "Requirements · TransportHub" },
+      { property: "og:title", content: "Requirements · Maa Durga Transport" },
       {
         property: "og:description",
         content: "Client delivery requirements with destination, goods, price and matching status.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RequirementsPage,

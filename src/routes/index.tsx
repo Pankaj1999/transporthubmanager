@@ -7,18 +7,20 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TransportHub · Match trucks with delivery requirements" },
+      { title: "Maa Durga Transport · Match trucks with delivery requirements" },
       {
         name: "description",
         content:
-          "TransportHub is the operations desk for a transport agency: track trucks at the hub, log client requirements, match them in one action and rate every delivery.",
+          "Maa Durga Transport is the operations desk for a transport agency: track trucks at the hub, log client requirements, match them in one action and rate every delivery.",
       },
-      { property: "og:title", content: "TransportHub · Match trucks with delivery requirements" },
+      { property: "og:title", content: "Maa Durga Transport · Match trucks with delivery requirements" },
       {
         property: "og:description",
         content:
           "Track trucks at the hub, log client requirements, match them in one action and rate every delivery.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
@@ -54,7 +56,7 @@ function Landing() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Truck className="size-4" />
           </span>
-          <span className="font-display font-semibold">TransportHub</span>
+          <span className="font-display font-semibold">Maa Durga Transport</span>
         </div>
         <Button asChild variant="ghost">
           <Link to="/auth">Sign in</Link>

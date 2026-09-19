@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -8,6 +8,7 @@ import { DriverAvatar } from "@/components/DriverAvatar";
 import { AddTruckModal } from "@/components/AddTruckModal";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { formatDate, TRUCK_STATUSES, STATUS_LABEL } from "@/lib/status";
 import { useDeleteTruck, useTrucks, useVisits } from "@/lib/data";
@@ -15,16 +16,18 @@ import { useDeleteTruck, useTrucks, useVisits } from "@/lib/data";
 export const Route = createFileRoute("/_authenticated/trucks/")({
   head: () => ({
     meta: [
-      { title: "Trucks · TransportHub" },
+      { title: "Trucks · Maa Durga Transport" },
       {
         name: "description",
         content: "Every truck registered with the hub, its driver and its current visit status.",
       },
-      { property: "og:title", content: "Trucks · TransportHub" },
+      { property: "og:title", content: "Trucks · Maa Durga Transport" },
       {
         property: "og:description",
         content: "Every truck registered with the hub, its driver and its current visit status.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TrucksPage,
@@ -33,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/trucks/")({
 function TrucksPage() {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<string>("all");
+  const [search, setSearch] = useState("");
   const { data: trucks = [], isLoading } = useTrucks();
   const { data: visits = [] } = useVisits();
   const deleteTruck = useDeleteTruck();
@@ -42,9 +46,17 @@ function TrucksPage() {
     if (!latestVisit.has(visit.truck_id)) latestVisit.set(visit.truck_id, visit);
   }
 
+  const normalizedSearch = search.trim().toLocaleLowerCase();
   const rows = trucks
     .map((truck) => ({ truck, visit: latestVisit.get(truck.id) ?? null }))
-    .filter(({ visit }) => filter === "all" || visit?.status === filter);
+    .filter(({ visit }) => filter === "all" || visit?.status === filter)
+    .filter(({ truck }) =>
+      normalizedSearch.length === 0
+        ? true
+        : [truck.truck_number, truck.owner_name, truck.driver_name].some((value) =>
+            value.toLocaleLowerCase().includes(normalizedSearch),
+          ),
+    );
 
   return (
     <AppShell
@@ -56,8 +68,20 @@ function TrucksPage() {
         </Button>
       }
     >
-      <div className="mb-5 flex flex-wrap gap-2">
-        {["all", ...TRUCK_STATUSES].map((value) => (
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            aria-label="Search trucks"
+            placeholder="Search number, owner, or driver"
+            className="pl-9"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {["all", ...TRUCK_STATUSES].map((value) => (
           <button
             key={value}
             type="button"
@@ -69,7 +93,8 @@ function TrucksPage() {
           >
             {value === "all" ? "All" : STATUS_LABEL[value as keyof typeof STATUS_LABEL]}
           </button>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
@@ -77,7 +102,9 @@ function TrucksPage() {
           {isLoading ? (
             <li className="px-5 py-10 text-sm text-muted-foreground">Loading…</li>
           ) : rows.length === 0 ? (
-            <li className="px-5 py-10 text-sm text-muted-foreground">No trucks to show.</li>
+            <li className="px-5 py-10 text-sm text-muted-foreground">
+              {search.trim() ? "No trucks match your search and status filter." : "No trucks to show."}
+            </li>
           ) : (
             rows.map(({ truck, visit }) => (
               <li key={truck.id} className="flex items-center gap-2 pr-3 transition-colors hover:bg-secondary">
