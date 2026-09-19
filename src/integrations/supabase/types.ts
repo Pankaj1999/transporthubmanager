@@ -14,13 +14,216 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      ratings: {
+        Row: {
+          feedback_text: string | null
+          id: string
+          rated_at: string
+          rated_by: string | null
+          rating_value: number
+          truck_id: string
+          visit_id: string
+        }
+        Insert: {
+          feedback_text?: string | null
+          id?: string
+          rated_at?: string
+          rated_by?: string | null
+          rating_value: number
+          truck_id: string
+          visit_id: string
+        }
+        Update: {
+          feedback_text?: string | null
+          id?: string
+          rated_at?: string
+          rated_by?: string | null
+          rating_value?: number
+          truck_id?: string
+          visit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_truck_id_fkey"
+            columns: ["truck_id"]
+            isOneToOne: false
+            referencedRelation: "trucks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ratings_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: true
+            referencedRelation: "truck_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requirements: {
+        Row: {
+          assigned_visit_id: string | null
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          created_by: string | null
+          destination: string
+          goods_description: string | null
+          id: string
+          price_amount: number
+          status: string
+        }
+        Insert: {
+          assigned_visit_id?: string | null
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          destination: string
+          goods_description?: string | null
+          id?: string
+          price_amount?: number
+          status?: string
+        }
+        Update: {
+          assigned_visit_id?: string | null
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          destination?: string
+          goods_description?: string | null
+          id?: string
+          price_amount?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirements_assigned_visit_fk"
+            columns: ["assigned_visit_id"]
+            isOneToOne: false
+            referencedRelation: "truck_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      truck_visits: {
+        Row: {
+          arrival_date: string
+          created_at: string
+          created_by: string | null
+          departure_date: string | null
+          id: string
+          requirement_id: string | null
+          status: string
+          truck_id: string
+        }
+        Insert: {
+          arrival_date?: string
+          created_at?: string
+          created_by?: string | null
+          departure_date?: string | null
+          id?: string
+          requirement_id?: string | null
+          status?: string
+          truck_id: string
+        }
+        Update: {
+          arrival_date?: string
+          created_at?: string
+          created_by?: string | null
+          departure_date?: string | null
+          id?: string
+          requirement_id?: string | null
+          status?: string
+          truck_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "truck_visits_requirement_id_fkey"
+            columns: ["requirement_id"]
+            isOneToOne: false
+            referencedRelation: "requirements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "truck_visits_truck_id_fkey"
+            columns: ["truck_id"]
+            isOneToOne: false
+            referencedRelation: "trucks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trucks: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          driver_name: string
+          driver_phone: string | null
+          driver_photo_url: string | null
+          id: string
+          owner_name: string
+          owner_phone: string | null
+          truck_number: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          driver_name: string
+          driver_phone?: string | null
+          driver_photo_url?: string | null
+          id?: string
+          owner_name: string
+          owner_phone?: string | null
+          truck_number: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          driver_name?: string
+          driver_phone?: string | null
+          driver_photo_url?: string | null
+          id?: string
+          owner_name?: string
+          owner_phone?: string | null
+          truck_number?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      mark_delivered: { Args: { p_requirement_id: string }; Returns: undefined }
+      match_requirement: {
+        Args: { p_requirement_id: string; p_visit_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
