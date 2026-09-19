@@ -121,6 +121,7 @@ function TeamPage() {
                 <th className="px-4 py-3 font-medium">Name</th>
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">Role</th>
+                <th className="px-4 py-3 font-medium sr-only">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -136,8 +137,26 @@ function TeamPage() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{member.email ?? "—"}</td>
                   <td className="px-4 py-3 capitalize">{member.role}</td>
+                  <td className="px-4 py-3 text-right">
+                    {member.role === "owner" ? null : (
+                      <ConfirmDelete
+                        title="Promote to owner"
+                        description={`Give ${member.full_name ?? member.email ?? "this person"} full owner access, including inviting and promoting other people?`}
+                        confirmLabel="Promote to owner"
+                        destructive={false}
+                        pending={promoteMutation.isPending}
+                        onConfirm={() => promoteMutation.mutate(member.id)}
+                        trigger={
+                          <Button type="button" variant="outline" size="sm">
+                            Promote to owner
+                          </Button>
+                        }
+                      />
+                    )}
+                  </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
         </div>
