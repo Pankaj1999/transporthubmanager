@@ -100,7 +100,9 @@ export function useTruckVisits(truckId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("truck_visits")
-        .select("*, requirement:requirements(*), rating:ratings(*)")
+        .select(
+          "*, requirement:requirements!truck_visits_requirement_id_fkey(*), rating:ratings(*)",
+        )
         .eq("truck_id", truckId)
         .order("arrival_date", { ascending: false });
       throwIf(error);
@@ -118,7 +120,7 @@ export function useRequirements() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirements")
-        .select("*, visit:truck_visits(*, truck:trucks(*))")
+        .select("*, visit:truck_visits!requirements_assigned_visit_fk(*, truck:trucks(*))")
         .order("created_at", { ascending: false });
       throwIf(error);
       return (data ?? []) as unknown as (Requirement & {
