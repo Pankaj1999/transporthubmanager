@@ -7,10 +7,11 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { AddRequirementModal } from "@/components/AddRequirementModal";
 import { MatchPanel } from "@/components/MatchPanel";
 import { RateVisitModal, type RateTarget } from "@/components/RateVisitModal";
+import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatDate, formatMoney, REQUIREMENT_STATUSES, STATUS_LABEL } from "@/lib/status";
-import { useMarkDelivered, useRequirements, type Requirement } from "@/lib/data";
+import { useDeleteRequirement, useMarkDelivered, useRequirements, type Requirement } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/requirements")({
   head: () => ({
@@ -38,6 +39,7 @@ function RequirementsPage() {
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
   const { data: requirements = [], isLoading, error } = useRequirements();
   const markDelivered = useMarkDelivered();
+  const deleteRequirement = useDeleteRequirement();
 
   const rows = requirements.filter((r) => filter === "all" || r.status === filter);
 
@@ -145,6 +147,21 @@ function RequirementsPage() {
                         Rate truck
                       </Button>
                     ) : null}
+                    <ConfirmDelete
+                      title={`Delete requirement for ${req.destination}?`}
+                      description={
+                        req.status === "pending"
+                          ? "This removes the requirement permanently. This can't be undone."
+                          : "This requirement already has a truck assigned. Deleting it frees that truck back to available and removes the record permanently."
+                      }
+                      pending={deleteRequirement.isPending}
+                      onConfirm={() =>
+                        deleteRequirement.mutate(req.id, {
+                          onSuccess: () => toast.success("Requirement deleted"),
+                          onError: (error) => toast.error(error.message),
+                        })
+                      }
+                    />
                   </div>
                 </div>
               </li>

@@ -87,7 +87,8 @@ export function useVisits() {
       const { data, error } = await supabase
         .from("truck_visits")
         .select("*, truck:trucks(*)")
-        .order("arrival_date", { ascending: false });
+        .order("arrival_date", { ascending: false })
+        .order("created_at", { ascending: false });
       throwIf(error);
       return (data ?? []) as unknown as VisitWithTruck[];
     },
@@ -104,7 +105,8 @@ export function useTruckVisits(truckId: string) {
           "*, requirement:requirements!truck_visits_requirement_id_fkey(*), rating:ratings(*)",
         )
         .eq("truck_id", truckId)
-        .order("arrival_date", { ascending: false });
+        .order("arrival_date", { ascending: false })
+        .order("created_at", { ascending: false });
       throwIf(error);
       return (data ?? []) as unknown as (Visit & {
         requirement: Requirement | null;
@@ -283,6 +285,30 @@ export function useRateVisit() {
         },
         { onConflict: "visit_id" },
       );
+      throwIf(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeleteTruck() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (truckId: string) => {
+      const { error } = await supabase.rpc("delete_truck", { p_truck_id: truckId });
+      throwIf(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeleteRequirement() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (requirementId: string) => {
+      const { error } = await supabase.rpc("delete_requirement", {
+        p_requirement_id: requirementId,
+      });
       throwIf(error);
     },
     onSuccess: invalidate,
