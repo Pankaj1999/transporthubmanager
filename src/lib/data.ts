@@ -185,6 +185,9 @@ export function useAddTruck() {
         })
         .select("id")
         .single();
+      if (error && (error as { code?: string }).code === "23505") {
+        throw new Error(`Truck ${input.truck_number.trim()} is already registered.`);
+      }
       throwIf(error);
       // Every new truck starts a visit at the hub.
       const { error: visitErr } = await supabase.from("truck_visits").insert({
@@ -232,6 +235,52 @@ export function useAddRequirement() {
         price_amount: Number(input.price_amount || 0),
         created_by: userId,
       });
+      throwIf(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateRequirement() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (input: {
+      id: string;
+      client_name: string;
+      client_phone: string;
+      destination: string;
+      goods_description: string;
+      price_amount: string;
+    }) => {
+      const { error } = await supabase
+        .from("requirements")
+        .update({
+          client_name: input.client_name.trim(),
+          client_phone: input.client_phone.trim() || null,
+          destination: input.destination.trim(),
+          goods_description: input.goods_description.trim() || null,
+          price_amount: Number(input.price_amount || 0),
+        })
+        .eq("id", input.id);
+      throwIf(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
+/** Manual correction of a visit's status. */
+export function useUpdateVisitStatus() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (input: { visitId: string; status: string }) => {
+      const { error } = await supabase
+        .from("truck_visits")
+        .update({
+          status: input.status,
+          departure_date:
+            input.status === "delivered" ? new Date().toISOString().slice(0, 10) : null,
+        })
+        .eq("id", input.visitId);
       throwIf(error);
     },
     onSuccess: invalidate,

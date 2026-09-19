@@ -8,8 +8,15 @@ import { DriverAvatar } from "@/components/DriverAvatar";
 import { RateVisitModal, type RateTarget } from "@/components/RateVisitModal";
 import { ConfirmDelete } from "@/components/ConfirmDelete";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatMoney } from "@/lib/status";
-import { useAddVisit, useDeleteTruck, useTruck, useTruckVisits, type Rating } from "@/lib/data";
+import { formatDate, formatMoney, STATUS_LABEL, TRUCK_STATUSES } from "@/lib/status";
+import {
+  useAddVisit,
+  useDeleteTruck,
+  useTruck,
+  useTruckVisits,
+  useUpdateVisitStatus,
+  type Rating,
+} from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/trucks/$truckId")({
   head: () => ({
@@ -56,6 +63,7 @@ function TruckProfile() {
   const { data: visits = [], isLoading } = useTruckVisits(truckId);
   const addVisit = useAddVisit();
   const deleteTruck = useDeleteTruck();
+  const updateStatus = useUpdateVisitStatus();
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
 
   const rated = visits.map((v) => firstRating(v.rating)).filter((r): r is Rating => !!r);
@@ -176,7 +184,7 @@ function TruckProfile() {
             ) : visits.length === 0 ? (
               <li className="px-5 py-8 text-sm text-muted-foreground">No visits recorded.</li>
             ) : (
-              visits.map((visit) => {
+              visits.map((visit, index) => {
                 const rating = firstRating(visit.rating);
                 return (
                   <li key={visit.id} className="px-5 py-4">
@@ -185,6 +193,32 @@ function TruckProfile() {
                         {formatDate(visit.arrival_date)} –{" "}
                         {visit.departure_date ? formatDate(visit.departure_date) : "present"}
                       </p>
+                      {index === 0 ? (
+                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                          Status
+                          <select
+                            aria-label="Visit status"
+                            className="rounded-lg border border-border bg-background px-2 py-1 text-xs text-foreground"
+                            value={visit.status}
+                            disabled={updateStatus.isPending}
+                            onChange={(e) =>
+                              updateStatus.mutate(
+                                { visitId: visit.id, status: e.target.value },
+                                {
+                                  onSuccess: () => toast.success("Status updated"),
+                                  onError: (error) => toast.error(error.message),
+                                },
+                              )
+                            }
+                          >
+                            {TRUCK_STATUSES.map((s) => (
+                              <option key={s} value={s}>
+                                {STATUS_LABEL[s]}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ) : null}
                       <StatusBadge status={visit.status} />
                     </div>
                     {visit.requirement ? (
