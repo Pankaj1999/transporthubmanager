@@ -114,9 +114,15 @@ function RequirementsPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <StatusBadge status={req.status} />
                     {req.status === "pending" ? (
-                      <Button size="sm" onClick={() => setMatchTarget(req)}>
-                        Match truck
-                      </Button>
+                      <>
+                        <Button size="sm" variant="outline" onClick={() => setEditTarget(req)}>
+                          <Pencil className="size-3.5" />
+                          Edit
+                        </Button>
+                        <Button size="sm" onClick={() => setMatchTarget(req)}>
+                          Match truck
+                        </Button>
+                      </>
                     ) : null}
                     {req.status === "assigned" || req.status === "in_transit" ? (
                       <Button
@@ -171,10 +177,21 @@ function RequirementsPage() {
             ))
           )}
         </ul>
+        {rows.length > 0 ? (
+          <div className="flex items-center justify-between border-t border-border px-5 py-3 text-sm">
+            <span className="text-muted-foreground">
+              {rows.length} {rows.length === 1 ? "requirement" : "requirements"}
+            </span>
+            <span className="font-medium" data-testid="requirements-total">
+              Recorded total {formatMoney(total)}
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <AddRequirementModal open={openForm} onOpenChange={setOpenForm} />
       <MatchPanel requirement={matchTarget} onClose={() => setMatchTarget(null)} />
+      <EditRequirementModal requirement={editTarget} onClose={() => setEditTarget(null)} />
       <RateVisitModal target={rateTarget} onClose={() => setRateTarget(null)} />
     </AppShell>
   );
