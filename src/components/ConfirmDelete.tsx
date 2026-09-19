@@ -73,7 +73,6 @@ export function ConfirmDelete({
             </AlertDialogAction>
           </AlertDialogFooter>
 
-          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
