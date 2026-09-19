@@ -8,7 +8,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   children: ReactNode;
   /** Slide-over on desktop instead of a centered modal. */
   side?: boolean;
