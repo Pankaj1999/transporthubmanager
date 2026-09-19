@@ -63,6 +63,7 @@ function TruckProfile() {
   const { data: visits = [], isLoading } = useTruckVisits(truckId);
   const addVisit = useAddVisit();
   const deleteTruck = useDeleteTruck();
+  const updateStatus = useUpdateVisitStatus();
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
 
   const rated = visits.map((v) => firstRating(v.rating)).filter((r): r is Rating => !!r);
