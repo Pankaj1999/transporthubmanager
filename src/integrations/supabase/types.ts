@@ -219,6 +219,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_requirement: {
+        Args: { p_requirement_id: string }
+        Returns: undefined
+      }
+      delete_truck: { Args: { p_truck_id: string }; Returns: undefined }
       mark_delivered: { Args: { p_requirement_id: string }; Returns: undefined }
       match_requirement: {
         Args: { p_requirement_id: string; p_visit_id: string }
