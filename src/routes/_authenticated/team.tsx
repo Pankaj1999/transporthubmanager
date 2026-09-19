@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { inviteEmployee, listTeam } from "@/lib/team.functions";
+import { useMyProfile } from "@/lib/data";
+
 
 export const Route = createFileRoute("/_authenticated/team")({
   head: () => ({
@@ -73,13 +75,21 @@ function TeamPage() {
     <AppShell
       title="Team"
       action={
-        <Button onClick={() => setOpen(true)} className="gap-2">
-          <UserPlus className="size-4" />
-          Invite employee
-        </Button>
+        isOwner ? (
+          <Button onClick={() => setOpen(true)} className="gap-2">
+            <UserPlus className="size-4" />
+            Invite employee
+          </Button>
+        ) : undefined
       }
     >
-      {team.isLoading ? (
+      {profile.isLoading ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : !isOwner ? (
+        <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+          Only the owner can view and manage team members.
+        </div>
+      ) : team.isLoading ? (
         <p className="text-sm text-muted-foreground">Loading team…</p>
       ) : team.isError ? (
         <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
@@ -88,6 +98,7 @@ function TeamPage() {
             : "Could not load the team list."}
         </div>
       ) : (
+
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="bg-secondary/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
