@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, Truck, ClipboardList, LogOut } from "lucide-react";
+import { LayoutDashboard, Truck, ClipboardList, LogOut, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useMyProfile } from "@/lib/data";
 
-const NAV = [
+const BASE_NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/trucks", label: "Trucks", icon: Truck },
   { to: "/requirements", label: "Requirements", icon: ClipboardList },
 ] as const;
+
+const TEAM_NAV = { to: "/team", label: "Team", icon: Users } as const;
 
 export function AppShell({
   title,
@@ -22,6 +25,8 @@ export function AppShell({
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const profile = useMyProfile();
+  const NAV = profile.data?.role === "owner" ? [...BASE_NAV, TEAM_NAV] : BASE_NAV;
 
   async function signOut() {
     await queryClient.cancelQueries();
