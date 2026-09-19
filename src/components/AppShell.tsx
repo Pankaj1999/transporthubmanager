@@ -38,7 +38,7 @@ export function AppShell({
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Truck className="size-4" />
           </span>
-          <span className="font-display text-base font-semibold">TransportHub</span>
+          <span className="font-display text-base font-semibold">Maa Durga Transport</span>
         </div>
         <nav className="mt-8 flex flex-1 flex-col gap-1">
           {NAV.map(({ to, label, icon: Icon }) => (
@@ -63,7 +63,7 @@ export function AppShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur md:hidden">
           <div className="flex items-center justify-between px-4 py-3">
-            <span className="font-display text-sm font-semibold">TransportHub</span>
+            <span className="font-display text-sm font-semibold">Maa Durga Transport</span>
             <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out">
               <LogOut className="size-4" />
             </Button>

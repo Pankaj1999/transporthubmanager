@@ -10,15 +10,15 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in · TransportHub" },
+      { title: "Sign in · Maa Durga Transport" },
       {
         name: "description",
-        content: "Sign in to TransportHub to manage trucks, requirements and deliveries.",
+        content: "Sign in to Maa Durga Transport to manage trucks, requirements and deliveries.",
       },
-      { property: "og:title", content: "Sign in · TransportHub" },
+      { property: "og:title", content: "Sign in · Maa Durga Transport" },
       {
         property: "og:description",
-        content: "Sign in to TransportHub to manage trucks, requirements and deliveries.",
+        content: "Sign in to Maa Durga Transport to manage trucks, requirements and deliveries.",
       },
     ],
   }),
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -47,7 +47,13 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setCheckEmail(true);
+      } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -79,7 +85,7 @@ function AuthPage() {
           <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Truck className="size-4" />
           </span>
-          <span className="font-display text-lg font-semibold">TransportHub</span>
+          <span className="font-display text-lg font-semibold">Maa Durga Transport</span>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
@@ -87,8 +93,9 @@ function AuthPage() {
             <div className="space-y-3 text-center">
               <h1 className="text-lg font-semibold">Check your email</h1>
               <p className="text-sm text-muted-foreground">
-                We sent a confirmation link to {email}. Open it to activate your account, then sign
-                in.
+                 {mode === "forgot"
+                   ? `We sent a password reset link to ${email}. Open it to choose a new password.`
+                   : `We sent a confirmation link to ${email}. Open it to activate your account, then sign in.`}
               </p>
               <Button
                 variant="ghost"
@@ -103,14 +110,20 @@ function AuthPage() {
           ) : (
             <>
               <h1 className="text-xl font-semibold">
-                {mode === "signin" ? "Sign in" : "Create your account"}
+                 {mode === "signin"
+                   ? "Sign in"
+                   : mode === "signup"
+                     ? "Create your account"
+                     : "Reset your password"}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Operations access for the owner and employees.
+                 {mode === "forgot"
+                   ? "Enter your email and we'll send you a secure reset link."
+                   : "Operations access for the owner and employees."}
               </p>
               <form onSubmit={submit} className="mt-6 space-y-4">
-                {mode === "signup" ? (
-                  <div className="space-y-2">
+                 {mode === "signup" ? (
+                 {mode !== "forgot" ? <div className="space-y-2">
                     <Label htmlFor="fullName">Full name</Label>
                     <Input
                       id="fullName"
@@ -142,20 +155,34 @@ function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                </div>
+                 </div> : null}
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
+                   {loading
+                     ? "Please wait…"
+                     : mode === "signin"
+                       ? "Sign in"
+                       : mode === "signup"
+                         ? "Create account"
+                         : "Send reset link"}
                 </Button>
               </form>
-              <button
-                type="button"
-                className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground"
-                onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-              >
-                {mode === "signin"
-                  ? "No account yet? Create one"
-                  : "Already have an account? Sign in"}
-              </button>
+               <div className="mt-4 flex flex-col items-center gap-2">
+                 {mode === "signin" ? (
+                   <Button type="button" variant="link" size="sm" onClick={() => setMode("forgot")}>
+                     Forgot password?
+                   </Button>
+                 ) : null}
+                 <Button
+                   type="button"
+                   variant="link"
+                   size="sm"
+                   onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+                 >
+                   {mode === "signin"
+                     ? "No account yet? Create one"
+                     : "Back to sign in"}
+                 </Button>
+               </div>
             </>
           )}
         </div>

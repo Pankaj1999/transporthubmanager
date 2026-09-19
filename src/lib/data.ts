@@ -351,6 +351,17 @@ export function useDeleteTruck() {
   });
 }
 
+export function useDeleteVisit() {
+  const invalidate = useInvalidateAll();
+  return useMutation({
+    mutationFn: async (visitId: string) => {
+      const { error } = await supabase.rpc("delete_visit", { p_visit_id: visitId });
+      throwIf(error);
+    },
+    onSuccess: invalidate,
+  });
+}
+
 export function useDeleteRequirement() {
   const invalidate = useInvalidateAll();
   return useMutation({

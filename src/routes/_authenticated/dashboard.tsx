@@ -9,12 +9,12 @@ import { useRequirements, useVisits } from "@/lib/data";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard · TransportHub" },
+      { title: "Dashboard · Maa Durga Transport" },
       {
         name: "description",
         content: "Live view of trucks at the hub, pending requirements and shipments in transit.",
       },
-      { property: "og:title", content: "Dashboard · TransportHub" },
+      { property: "og:title", content: "Dashboard · Maa Durga Transport" },
       {
         property: "og:description",
         content: "Live view of trucks at the hub, pending requirements and shipments in transit.",

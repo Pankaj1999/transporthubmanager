@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { formatDate, formatMoney, STATUS_LABEL, TRUCK_STATUSES } from "@/lib/status";
 import {
   useAddVisit,
+  useDeleteVisit,
   useDeleteTruck,
   useTruck,
   useTruckVisits,
@@ -21,12 +22,12 @@ import {
 export const Route = createFileRoute("/_authenticated/trucks/$truckId")({
   head: () => ({
     meta: [
-      { title: "Truck profile · TransportHub" },
+      { title: "Truck profile · Maa Durga Transport" },
       {
         name: "description",
         content: "Permanent truck details plus the full visit history, ratings and feedback.",
       },
-      { property: "og:title", content: "Truck profile · TransportHub" },
+      { property: "og:title", content: "Truck profile · Maa Durga Transport" },
       {
         property: "og:description",
         content: "Permanent truck details plus the full visit history, ratings and feedback.",
@@ -63,6 +64,7 @@ function TruckProfile() {
   const { data: visits = [], isLoading } = useTruckVisits(truckId);
   const addVisit = useAddVisit();
   const deleteTruck = useDeleteTruck();
+  const deleteVisit = useDeleteVisit();
   const updateStatus = useUpdateVisitStatus();
   const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
 
@@ -193,8 +195,9 @@ function TruckProfile() {
                         {formatDate(visit.arrival_date)} –{" "}
                         {visit.departure_date ? formatDate(visit.departure_date) : "present"}
                       </p>
-                      {index === 0 ? (
-                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {index === 0 ? (
+                          <label className="flex items-center gap-2 text-xs text-muted-foreground">
                           Status
                           <select
                             aria-label="Visit status"
@@ -217,9 +220,25 @@ function TruckProfile() {
                               </option>
                             ))}
                           </select>
-                        </label>
-                      ) : null}
-                      <StatusBadge status={visit.status} />
+                          </label>
+                        ) : null}
+                        <StatusBadge status={visit.status} />
+                        <ConfirmDelete
+                          title={`Delete visit from ${formatDate(visit.arrival_date)}?`}
+                          description={
+                            visit.requirement
+                              ? "This removes the visit and its rating. The linked requirement returns to pending so it can be matched again. This can't be undone."
+                              : "This removes the visit and its rating permanently. The truck itself will stay. This can't be undone."
+                          }
+                          pending={deleteVisit.isPending}
+                          onConfirm={() =>
+                            deleteVisit.mutate(visit.id, {
+                              onSuccess: () => toast.success("Visit deleted"),
+                              onError: (error) => toast.error(error.message),
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                     {visit.requirement ? (
                       <p className="mt-1 text-xs text-muted-foreground">

@@ -80,12 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TransportHub" },
+      { title: "Maa Durga Transport" },
       {
         name: "description",
         content: "Operations desk for a transport agency: trucks, requirements, matching, ratings.",
       },
-      { property: "og:title", content: "TransportHub" },
+      { property: "og:title", content: "Maa Durga Transport" },
       {
         property: "og:description",
         content: "Operations desk for a transport agency: trucks, requirements, matching, ratings.",
