@@ -35,11 +35,19 @@ function TeamPage() {
   const fetchTeam = useServerFn(listTeam);
   const invite = useServerFn(inviteEmployee);
   const qc = useQueryClient();
+  const profile = useMyProfile();
+  const isOwner = profile.data?.role === "owner";
   const [open, setOpen] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
 
-  const team = useQuery({ queryKey: ["team"], queryFn: () => fetchTeam(), retry: false });
+  const team = useQuery({
+    queryKey: ["team"],
+    queryFn: () => fetchTeam(),
+    retry: false,
+    enabled: isOwner,
+  });
+
 
   const inviteMutation = useMutation({
     mutationFn: async () =>
