@@ -224,6 +224,7 @@ export type Database = {
         Returns: undefined
       }
       delete_truck: { Args: { p_truck_id: string }; Returns: undefined }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
       mark_delivered: { Args: { p_requirement_id: string }; Returns: undefined }
       match_requirement: {
         Args: { p_requirement_id: string; p_visit_id: string }
