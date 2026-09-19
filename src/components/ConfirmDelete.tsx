@@ -17,6 +17,7 @@ export function ConfirmDelete({
   description,
   confirmLabel = "Delete",
   pending,
+  destructive = true,
   onConfirm,
   trigger,
 }: {
@@ -24,6 +25,7 @@ export function ConfirmDelete({
   description: ReactNode;
   confirmLabel?: string;
   pending?: boolean;
+  destructive?: boolean;
   onConfirm: () => void;
   trigger?: ReactNode;
 }) {
@@ -60,11 +62,17 @@ export function ConfirmDelete({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               disabled={pending}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className={
+                destructive
+                  ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  : undefined
+              }
               onClick={() => onConfirm()}
             >
               {confirmLabel}
             </AlertDialogAction>
+          </AlertDialogFooter>
+
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
