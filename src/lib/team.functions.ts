@@ -70,7 +70,7 @@ export const inviteEmployee = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
       data: { full_name: data.full_name },
-      redirectTo: data.redirectTo,
+      ...(data.redirectTo ? { redirectTo: data.redirectTo } : {}),
     });
     if (error) {
       throw new Error(
