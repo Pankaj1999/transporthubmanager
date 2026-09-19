@@ -19,6 +19,8 @@
  */
 
 @theme inline {
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -26,6 +28,17 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-status-wait: var(--status-wait);
+  --color-status-wait-foreground: var(--status-wait-foreground);
+  --color-status-wait-surface: var(--status-wait-surface);
+  --color-status-progress: var(--status-progress);
+  --color-status-progress-foreground: var(--status-progress-foreground);
+  --color-status-progress-surface: var(--status-progress-surface);
+  --color-status-done: var(--status-done);
+  --color-status-done-foreground: var(--status-done-foreground);
+  --color-status-done-surface: var(--status-done-surface);
+  --shadow-soft: 0 1px 2px oklch(0.2 0.03 240 / 6%), 0 8px 24px -12px oklch(0.2 0.03 240 / 12%);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
